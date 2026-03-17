@@ -21,9 +21,11 @@ Use this skill to access the Codex Supergraph without an API key via the MPP cha
 
 ## How it works
 
+**Every MPP request MUST include the header `X-Codex-Payment: mpp`.** Without it the server will not recognize the request as MPP and will not return the 402 challenge — the request will simply fail. This header is required on both the initial challenge request and the credential retry.
+
 1. Send a GraphQL query with `X-Codex-Payment: mpp` (no credential).
 2. Server returns `402 Payment Required` with `WWW-Authenticate: Payment ...` challenges.
-3. Client solves one challenge and retries with `Authorization: Payment <credential>`.
+3. Client solves one challenge and retries with both `X-Codex-Payment: mpp` and `Authorization: Payment <credential>`.
 4. Server returns GraphQL data + `Payment-Receipt` header.
 
 ## Constraints
@@ -59,6 +61,7 @@ Expected: GraphQL data + `Payment-Receipt` header.
 
 ## Rules
 
+- **Always include `X-Codex-Payment: mpp` on every MPP request.** This is the most common mistake — without it, MPP does not activate.
 - Never print raw credentials.
 - Only use MPP for `query` operations.
 - For available GraphQL operations and endpoint selection heuristics, see the `codex-supergraph` skill.

@@ -15,6 +15,8 @@ metadata:
 
 This skill requires a valid `CODEX_API_KEY`. When the key is missing or empty, fall back to the codex-gateway skill instead — do not attempt keyless requests or public endpoints unless the user explicitly asks for one. Check for the key before making any network calls.
 
+**Critical:** When falling back to MPP via the codex-gateway skill, you MUST include the `X-Codex-Payment: mpp` header on every request. Without this header the server will reject the request outright — it will not return the 402 challenge needed to proceed. Simply removing the API key header is not enough; you must actively opt in to MPP with this header.
+
 Switching back: If a user later provides a key and asks to use this skill, re-check at that point. A key simply appearing in the environment does not auto-activate this skill.
 
 If both a local and global copy of this skill exist, the local copy takes precedence.
