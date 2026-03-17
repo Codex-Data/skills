@@ -12,6 +12,22 @@
 | API key | `Authorization: <key>` | query, mutation, subscription | Standard path |
 | Short-lived token | `Authorization: Bearer <token>` | query, mutation, subscription | Token-scoped limits |
 
+## Common network IDs
+
+| Network | `networkId` |
+| ------- | ----------- |
+| Ethereum | `1` |
+| Base | `8453` |
+| Arbitrum | `42161` |
+| Polygon | `137` |
+| Tempo | `4217` |
+| Optimism | `10` |
+| BNB Chain | `56` |
+| Avalanche | `43114` |
+| Solana | `1399811149` |
+
+Run `getNetworks` once per session for the full list.
+
 ## Session preflight
 
 ```graphql
@@ -53,9 +69,21 @@ Use to validate `networkId` before price/event/chart requests.
 - Wait for `connection_ack`
 - Unsubscribe with `complete`
 
+## Pagination
+
+- `filterTokens`: max 200 results per call. Use the `offset` variable to paginate (e.g., `offset: 0`, then `offset: 200`).
+- `getTokenEvents`: use `cursor` from the previous response to fetch the next page.
+- `holders`: use `cursor` for pagination.
+
+## Rate limits
+
+The API enforces per-key rate limits. When exceeded, responses return HTTP 429. Back off and retry with exponential delay. Short-lived tokens may have stricter limits than long-lived API keys.
+
 ## Common failures
 
 | Symptom | Likely cause | Fix |
 | ------- | ------------ | --- |
 | 401 / UNAUTHENTICATED | Missing or invalid API auth | Validate key/token and header format |
+| 429 / Too Many Requests | Rate limit exceeded | Back off with exponential delay and retry |
 | GraphQL validation error | Input shape mismatch | Check operation args and variable types |
+| Empty bars response | Invalid symbol format | Use `pairAddress:networkId` format for `getBars` symbol |

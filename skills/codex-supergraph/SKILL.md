@@ -13,7 +13,7 @@ metadata:
 
 ## API Key Guard
 
-This skill requires a valid `CODEX_API_KEY`. When the key is missing or empty, fall back to the codex-mpp skill instead — do not attempt keyless requests or public endpoints unless the user explicitly asks for one. Check for the key before making any network calls.
+This skill requires a valid `CODEX_API_KEY`. When the key is missing or empty, fall back to the codex-gateway skill instead — do not attempt keyless requests or public endpoints unless the user explicitly asks for one. Check for the key before making any network calls.
 
 Switching back: If a user later provides a key and asks to use this skill, re-check at that point. A key simply appearing in the environment does not auto-activate this skill.
 
@@ -56,15 +56,22 @@ Use network IDs from this result before expensive requests.
 | Networks | `getNetworks` |
 | Token discovery/search | `filterTokens` |
 | Token prices | `getTokenPrices` |
+| Pairs for a token | `listPairsWithMetadataForToken` |
 | Pair metadata | `pairMetadata` |
 | Pair OHLCV | `getBars` |
 | Token OHLCV | `getTokenBars` |
+| Token events | `getTokenEvents` |
 | Maker events | `getTokenEventsForMaker` |
+| Wallet leaders | `filterTokenWallets` |
+| Wallet chart/stats | `walletChart`, `detailedWalletStats` |
 | Holders | `holders` |
 | Top-10 concentration | `top10HoldersPercent` |
 | Live single price | `onPriceUpdated` |
 | Live multi-price | `onPricesUpdated` |
+| Live token events | `onTokenEventsCreated`, `onEventsCreatedByMaker` |
 | Live bars/pairs | `onBarsUpdated`, `onPairMetadataUpdated`, `onTokenBarsUpdated` |
+| Launchpad streams | `onLaunchpadTokenEventBatch`, `onLaunchpadTokenEvent` |
+| Unconfirmed Solana events | `onUnconfirmedEventsCreated` |
 | Short-lived keys | `createApiTokens`, `apiTokens`, `apiToken`, `deleteApiToken` |
 
 Default discovery path: start with `filterTokens`.

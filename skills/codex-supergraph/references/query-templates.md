@@ -38,8 +38,11 @@ query FilterTokens(
   $filters: TokenFilters
   $rankings: [TokenRanking]
   $limit: Int
+  $offset: Int
 ) {
-  filterTokens(filters: $filters, rankings: $rankings, limit: $limit) {
+  filterTokens(filters: $filters, rankings: $rankings, limit: $limit, offset: $offset) {
+    count
+    offset
     results {
       buyVolume24
       sellVolume24
@@ -51,10 +54,25 @@ query FilterTokens(
           address
           name
           symbol
+          networkId
         }
       }
     }
   }
+}
+```
+
+Example variables — top tokens on Solana by volume:
+
+```json
+{
+  "filters": {
+    "network": [1399811149],
+    "liquidity": { "gte": 10000 }
+  },
+  "rankings": [{ "attribute": "volume24", "direction": "DESC" }],
+  "limit": 25,
+  "offset": 0
 }
 ```
 
@@ -86,6 +104,8 @@ query PairMetadata($pairId: String!) {
 
 ## 5) Pair bars (`getBars`)
 
+`symbol` format is `pairAddress:networkId` (e.g., `"0xabc123:1"`). `from`/`to` are Unix timestamps in seconds. `resolution` examples: `"1"` (1 min), `"5"`, `"15"`, `"60"`, `"240"`, `"1D"`, `"1W"`. Max 1500 datapoints per request.
+
 ```graphql
 query GetBars(
   $symbol: String!
@@ -103,6 +123,7 @@ query GetBars(
     countback: $countback
     removeEmptyBars: $removeEmptyBars
   ) {
+    t
     o
     h
     l
@@ -140,7 +161,199 @@ subscription OnPricesUpdated($input: [OnPricesUpdatedInput!]!) {
 }
 ```
 
-## 8) WebSocket client (`graphql-ws`)
+Example variables:
+
+```json
+{
+  "input": [
+    { "address": "So11111111111111111111111111111111111111112", "networkId": 1399811149 },
+    { "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", "networkId": 1 }
+  ]
+}
+```
+
+## 8) Token bars (`getTokenBars`)
+
+Aggregates OHLCV across top liquidity pairs for a token. Uses same `resolution` values as `getBars`.
+
+```graphql
+query GetTokenBars(
+  $symbol: String!
+  $from: Int!
+  $to: Int!
+  $resolution: String!
+  $countback: Int
+  $removeEmptyBars: Boolean
+) {
+  getTokenBars(
+    symbol: $symbol
+    from: $from
+    to: $to
+    resolution: $resolution
+    countback: $countback
+    removeEmptyBars: $removeEmptyBars
+  ) {
+    t
+    o
+    h
+    l
+    c
+    volume
+  }
+}
+```
+
+## 9) List pairs for a token (`listPairsWithMetadataForToken`)
+
+```graphql
+query ListPairs($tokenAddress: String!, $networkId: Int!) {
+  listPairsWithMetadataForToken(tokenAddress: $tokenAddress, networkId: $networkId) {
+    results {
+      pair {
+        address
+        networkId
+        token0
+        token1
+      }
+      volume24
+      liquidity
+      price
+    }
+  }
+}
+```
+
+## 10) Token events (`getTokenEvents`)
+
+```graphql
+query GetTokenEvents(
+  $address: String!
+  $networkId: Int!
+  $cursor: String
+  $limit: Int
+) {
+  getTokenEvents(
+    address: $address
+    networkId: $networkId
+    cursor: $cursor
+    limit: $limit
+  ) {
+    cursor
+    items {
+      timestamp
+      eventType
+      priceUsd
+      token0ValueBase
+      token1ValueBase
+      maker
+      transactionHash
+    }
+  }
+}
+```
+
+## 11) Maker events (`getTokenEventsForMaker`)
+
+```graphql
+query GetTokenEventsForMaker(
+  $address: String!
+  $networkId: Int!
+  $maker: String!
+  $cursor: String
+  $limit: Int
+) {
+  getTokenEventsForMaker(
+    address: $address
+    networkId: $networkId
+    maker: $maker
+    cursor: $cursor
+    limit: $limit
+  ) {
+    cursor
+    items {
+      timestamp
+      eventType
+      priceUsd
+      token0ValueBase
+      token1ValueBase
+      transactionHash
+    }
+  }
+}
+```
+
+## 12) Holders (`holders`)
+
+```graphql
+query Holders($input: HoldersInput!) {
+  holders(input: $input) {
+    cursor
+    count
+    holders {
+      address
+      balance
+      sharedPct
+    }
+  }
+}
+```
+
+## 13) Top-10 holder concentration (`top10HoldersPercent`)
+
+```graphql
+query Top10HoldersPercent($address: String!, $networkId: Int!) {
+  top10HoldersPercent(address: $address, networkId: $networkId)
+}
+```
+
+## 14) Wallet leaders (`filterTokenWallets`)
+
+```graphql
+query FilterTokenWallets(
+  $address: String!
+  $networkId: Int!
+  $limit: Int
+) {
+  filterTokenWallets(
+    address: $address
+    networkId: $networkId
+    limit: $limit
+  ) {
+    results {
+      walletAddress
+      balance
+      balanceUsd
+      pnlUsd
+    }
+  }
+}
+```
+
+## 15) Wallet chart (`walletChart`)
+
+```graphql
+query WalletChart(
+  $walletAddress: String!
+  $networkId: Int!
+  $from: Int!
+  $to: Int!
+  $resolution: String!
+) {
+  walletChart(
+    walletAddress: $walletAddress
+    networkId: $networkId
+    from: $from
+    to: $to
+    resolution: $resolution
+  ) {
+    t
+    balanceUsd
+    pnlUsd
+  }
+}
+```
+
+## 16) WebSocket client (`graphql-ws`)
 
 ```typescript
 import { createClient } from "graphql-ws";
