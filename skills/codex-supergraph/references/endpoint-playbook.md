@@ -7,6 +7,7 @@ Use this map to pick the best operation quickly.
 | Intent | Preferred query | Notes |
 | --- | --- | --- |
 | Discover tradable tokens with ranking/filtering | `filterTokens` | Supports phrase search and quality filters; response limit 200. |
+| Trending tokens | `filterTokens` | Rank by `trendingScore24` DESC with `statsType: "FILTERED"`. Use `trendingIgnored: false` and `potentialScam: false` filters to exclude noise. |
 | Find pairs for a token | `listPairsWithMetadataForToken` | Useful before charting or pair-specific metadata. |
 | Find wallet leaders for a token | `filterTokenWallets` | Good for holder quality and top-wallet analysis. |
 

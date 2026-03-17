@@ -57,6 +57,7 @@ Use network IDs from this result before expensive requests.
 | ---- | --------- |
 | Networks | `getNetworks` |
 | Token discovery/search | `filterTokens` |
+| Trending tokens | `filterTokens` with `trendingScore24` ranking |
 | Token prices | `getTokenPrices` |
 | Pairs for a token | `listPairsWithMetadataForToken` |
 | Pair metadata | `pairMetadata` |

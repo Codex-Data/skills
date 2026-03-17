@@ -36,11 +36,18 @@ JSON
 ```graphql
 query FilterTokens(
   $filters: TokenFilters
+  $statsType: TokenPairStatisticsType
   $rankings: [TokenRanking]
   $limit: Int
   $offset: Int
 ) {
-  filterTokens(filters: $filters, rankings: $rankings, limit: $limit, offset: $offset) {
+  filterTokens(
+    filters: $filters
+    statsType: $statsType
+    rankings: $rankings
+    limit: $limit
+    offset: $offset
+  ) {
     count
     offset
     results {
@@ -49,6 +56,7 @@ query FilterTokens(
       circulatingMarketCap
       liquidity
       txnCount24
+      trendingScore24
       token {
         info {
           address
@@ -72,6 +80,25 @@ Example variables — top tokens on Solana by volume:
   },
   "rankings": [{ "attribute": "volume24", "direction": "DESC" }],
   "limit": 25,
+  "offset": 0
+}
+```
+
+Example variables — trending tokens:
+
+```json
+{
+  "filters": {
+    "volume24": { "lte": 100000000000 },
+    "liquidity": { "lte": 1000000000 },
+    "marketCap": { "gte": 500000, "lte": 1000000000000 },
+    "trendingIgnored": false,
+    "creatorAddress": null,
+    "potentialScam": false
+  },
+  "statsType": "FILTERED",
+  "rankings": [{ "attribute": "trendingScore24", "direction": "DESC" }],
+  "limit": 50,
   "offset": 0
 }
 ```
