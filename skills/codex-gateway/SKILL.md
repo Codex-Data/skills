@@ -1,5 +1,5 @@
 ---
-name: agent-payments
+name: codex-gateway
 description: >-
   Machine Payment Protocol (MPP) for keyless, pay-per-query access to the Codex
   Supergraph GraphQL API. Use when the user has no API key and wants to pay per
