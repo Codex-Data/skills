@@ -1,6 +1,6 @@
 # Codex Supergraph Query Templates
 
-## 1) API-key query over HTTPS
+## 1) Simple query
 
 ```bash
 curl -sS https://graph.codex.io/graphql \
@@ -13,7 +13,7 @@ curl -sS https://graph.codex.io/graphql \
 JSON
 ```
 
-## 2) API-key query with variables
+## 2) Query with variables
 
 ```bash
 curl -sS https://graph.codex.io/graphql \

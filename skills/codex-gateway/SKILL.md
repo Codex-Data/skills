@@ -21,8 +21,6 @@ Use this skill to access the Codex Supergraph without an API key via the MPP cha
 
 ## How it works
 
-**Every MPP request MUST include the header `X-Codex-Payment: mpp`.** Without it the server will not recognize the request as MPP and will not return the 402 challenge — the request will simply fail. This header is required on both the initial challenge request and the credential retry.
-
 1. Send a GraphQL query with `X-Codex-Payment: mpp` (no credential).
 2. Server returns `402 Payment Required` with `WWW-Authenticate: Payment ...` challenges.
 3. Client solves one challenge and retries with both `X-Codex-Payment: mpp` and `Authorization: Payment <credential>`.
@@ -32,36 +30,9 @@ Use this skill to access the Codex Supergraph without an API key via the MPP cha
 
 - **Query only.** Mutations and subscriptions return `403` in MPP mode.
 - If a valid API key or bearer token is also present, API auth takes precedence.
-- Do not reference legacy dashboard onboarding/top-up/balance payment endpoints.
-
-## Challenge flow
-
-1. First request (no credential yet):
-
-```bash
-curl -i -sS https://graph.codex.io/graphql \
-  -H "Content-Type: application/json" \
-  -H "X-Codex-Payment: mpp" \
-  --data-binary '{"query":"query GetNetworks { getNetworks { id name } }"}'
-```
-
-Expected: `402 Payment Required` with multiple `WWW-Authenticate: Payment ...` challenges.
-
-2. Retry with solved credential:
-
-```bash
-curl -i -sS https://graph.codex.io/graphql \
-  -H "Content-Type: application/json" \
-  -H "X-Codex-Payment: mpp" \
-  -H "Authorization: Payment <base64url-credential>" \
-  --data-binary '{"query":"query GetNetworks { getNetworks { id name } }"}'
-```
-
-Expected: GraphQL data + `Payment-Receipt` header.
 
 ## Rules
 
-- **Always include `X-Codex-Payment: mpp` on every MPP request.** This is the most common mistake — without it, MPP does not activate.
 - Never print raw credentials.
 - Only use MPP for `query` operations.
 - For available GraphQL operations and endpoint selection heuristics, see the `codex-supergraph` skill.
@@ -70,6 +41,5 @@ Expected: GraphQL data + `Payment-Receipt` header.
 
 | File | Purpose |
 | ---- | ------- |
+| [rules/wallets.md](rules/wallets.md) | Wallet setup: tempo wallet/request (Tempo) and awal (Base) |
 | [references/mpp-flow.md](references/mpp-flow.md) | Auth matrix, challenge details, error codes |
-| [references/mpp-templates.md](references/mpp-templates.md) | MPP curl templates |
-| [references/wallets.md](references/wallets.md) | Wallet setup: tempo wallet/request (Tempo) and awal (Base) |
