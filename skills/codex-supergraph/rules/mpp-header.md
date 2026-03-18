@@ -3,9 +3,9 @@
 When `$CODEX_API_KEY` is not available and you fall back to MPP (codex-gateway), every request MUST include:
 
 ```
-X-Codex-Payment: mpp
+-H "X-Codex-Payment: mpp"
 ```
 
-This header is required on both the initial 402 challenge request and the credential retry. Without it the server does not activate MPP and will not return a challenge — the request fails.
+This applies to ALL HTTP tools — `curl`, `tempo request`, or any other client. `tempo request` handles the 402 payment automatically but does NOT add this header for you.
 
-Do not send a bare request without auth and expect MPP to work. You must explicitly opt in with this header.
+Without this header the server returns 401 Unauthorized, not a 402 challenge.

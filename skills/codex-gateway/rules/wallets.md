@@ -40,13 +40,17 @@ Confirm `ready` is `true` and `balance.available` has sufficient USDC before mak
 
 ### Making a paid request
 
+You MUST include the `X-Codex-Payment: mpp` header — `tempo request` does not add it for you:
+
 ```bash
 tempo request -t -X POST \
+  -H "X-Codex-Payment: mpp" \
+  -H "Content-Type: application/json" \
   --json '{"query":"query { getNetworks { id name } }"}' \
   https://graph.codex.io/graphql
 ```
 
-`tempo request` handles the 402 challenge and payment automatically.
+`tempo request` handles the 402 challenge and payment automatically, but only if the server returns a 402. Without the MPP header, the server returns 401 instead.
 
 ### Session management
 

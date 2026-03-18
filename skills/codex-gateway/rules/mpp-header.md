@@ -6,9 +6,9 @@ Every request to the Codex Supergraph in MPP mode MUST include the header:
 X-Codex-Payment: mpp
 ```
 
-This applies to both the initial challenge request and the credential retry. Without this header the server does not activate MPP — it will not return a 402 challenge and the request will fail silently or with an auth error.
+This applies to ALL tools — `curl`, `tempo request`, or any other HTTP client. Without this header the server returns 401 Unauthorized instead of the 402 challenge needed for payment.
 
-## Correct initial request
+## With curl
 
 ```bash
 curl -i -sS https://graph.codex.io/graphql \
@@ -17,16 +17,18 @@ curl -i -sS https://graph.codex.io/graphql \
   --data-binary '{"query":"query { getNetworks { id name } }"}'
 ```
 
-## Correct retry with credential
+## With tempo request
+
+`tempo request` handles the 402 challenge/payment automatically, but it does NOT add the `X-Codex-Payment: mpp` header for you. You must pass it explicitly:
 
 ```bash
-curl -i -sS https://graph.codex.io/graphql \
-  -H "Content-Type: application/json" \
+tempo request -t -X POST \
   -H "X-Codex-Payment: mpp" \
-  -H "Authorization: Payment <base64url-credential>" \
-  --data-binary '{"query":"query { getNetworks { id name } }"}'
+  -H "Content-Type: application/json" \
+  --json '{"query":"query { getNetworks { id name } }"}' \
+  https://graph.codex.io/graphql
 ```
 
 ## Common mistake
 
-Sending a request without `X-Codex-Payment: mpp` and expecting a 402 challenge. The server will not return a challenge without this header — it treats the request as a standard unauthenticated request and rejects it.
+Sending a request without `X-Codex-Payment: mpp` and expecting MPP to activate. Without the header, the server treats it as a standard unauthenticated request and returns 401 — not a 402 challenge.
