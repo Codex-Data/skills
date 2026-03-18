@@ -49,14 +49,17 @@ query FilterTokens(
     offset: $offset
   ) {
     count
-    offset
+    page
     results {
+      priceUSD
+      marketCap
       buyVolume24
       sellVolume24
+      volume24
       circulatingMarketCap
       liquidity
       txnCount24
-      trendingScore24
+      holders
       token {
         info {
           address
@@ -102,6 +105,8 @@ Example variables — trending tokens:
   "offset": 0
 }
 ```
+
+Note: `trendingScore24` is a valid ranking attribute but is not a selectable field on the result type. Sort by it, but don't request it in the selection set.
 
 ## 4) Pair metadata (`pairMetadata`)
 
@@ -240,9 +245,8 @@ query ListPairs($tokenAddress: String!, $networkId: Int!) {
         token0
         token1
       }
-      volume24
+      volume
       liquidity
-      price
     }
   }
 }
@@ -252,14 +256,12 @@ query ListPairs($tokenAddress: String!, $networkId: Int!) {
 
 ```graphql
 query GetTokenEvents(
-  $address: String!
-  $networkId: Int!
+  $query: EventsQueryInput!
   $cursor: String
   $limit: Int
 ) {
   getTokenEvents(
-    address: $address
-    networkId: $networkId
+    query: $query
     cursor: $cursor
     limit: $limit
   ) {
@@ -267,7 +269,8 @@ query GetTokenEvents(
     items {
       timestamp
       eventType
-      priceUsd
+      token0SwapValueUsd
+      token1SwapValueUsd
       token0ValueBase
       token1ValueBase
       maker
@@ -277,20 +280,28 @@ query GetTokenEvents(
 }
 ```
 
+Example variables:
+
+```json
+{
+  "query": {
+    "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "networkId": 1
+  },
+  "limit": 25
+}
+```
+
 ## 11) Maker events (`getTokenEventsForMaker`)
 
 ```graphql
 query GetTokenEventsForMaker(
-  $address: String!
-  $networkId: Int!
-  $maker: String!
+  $query: MakerEventsQueryInput!
   $cursor: String
   $limit: Int
 ) {
   getTokenEventsForMaker(
-    address: $address
-    networkId: $networkId
-    maker: $maker
+    query: $query
     cursor: $cursor
     limit: $limit
   ) {
@@ -298,12 +309,26 @@ query GetTokenEventsForMaker(
     items {
       timestamp
       eventType
-      priceUsd
+      token0SwapValueUsd
+      token1SwapValueUsd
       token0ValueBase
       token1ValueBase
       transactionHash
     }
   }
+}
+```
+
+Example variables:
+
+```json
+{
+  "query": {
+    "maker": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+    "networkId": 1,
+    "tokenAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+  },
+  "limit": 25
 }
 ```
 
@@ -314,10 +339,12 @@ query Holders($input: HoldersInput!) {
   holders(input: $input) {
     cursor
     count
-    holders {
+    top10HoldersPercent
+    items {
       address
       balance
-      sharedPct
+      shiftedBalance
+      balanceUsd
     }
   }
 }
@@ -325,31 +352,50 @@ query Holders($input: HoldersInput!) {
 
 ## 13) Top-10 holder concentration (`top10HoldersPercent`)
 
+The `tokenId` is a composite ID in `address:networkId` format.
+
 ```graphql
-query Top10HoldersPercent($address: String!, $networkId: Int!) {
-  top10HoldersPercent(address: $address, networkId: $networkId)
+query Top10HoldersPercent($tokenId: String!) {
+  top10HoldersPercent(tokenId: $tokenId)
+}
+```
+
+Example variables:
+
+```json
+{
+  "tokenId": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2:1"
 }
 ```
 
 ## 14) Wallet leaders (`filterTokenWallets`)
 
 ```graphql
-query FilterTokenWallets(
-  $address: String!
-  $networkId: Int!
-  $limit: Int
-) {
-  filterTokenWallets(
-    address: $address
-    networkId: $networkId
-    limit: $limit
-  ) {
+query FilterTokenWallets($input: FilterTokenWalletsInput!) {
+  filterTokenWallets(input: $input) {
     results {
-      walletAddress
-      balance
-      balanceUsd
-      pnlUsd
+      address
+      tokenAddress
+      networkId
+      amountBoughtUsd1d
+      amountSoldUsd1d
+      realizedProfitUsd1d
+      realizedProfitPercentage1d
+      buys1d
+      sells1d
+      labels
     }
+  }
+}
+```
+
+Example variables:
+
+```json
+{
+  "input": {
+    "tokenIds": ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2:1"],
+    "limit": 25
   }
 }
 ```
@@ -357,23 +403,30 @@ query FilterTokenWallets(
 ## 15) Wallet chart (`walletChart`)
 
 ```graphql
-query WalletChart(
-  $walletAddress: String!
-  $networkId: Int!
-  $from: Int!
-  $to: Int!
-  $resolution: String!
-) {
-  walletChart(
-    walletAddress: $walletAddress
-    networkId: $networkId
-    from: $from
-    to: $to
-    resolution: $resolution
-  ) {
-    t
-    balanceUsd
-    pnlUsd
+query WalletChart($input: WalletChartInput!) {
+  walletChart(input: $input) {
+    walletAddress
+    networkId
+    resolution
+    data {
+      timestamp
+      volumeUsd
+      realizedProfitUsd
+      swaps
+    }
+  }
+}
+```
+
+Example variables:
+
+```json
+{
+  "input": {
+    "walletAddress": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+    "networkId": 1,
+    "range": { "start": 1710000000, "end": 1710600000 },
+    "resolution": "1D"
   }
 }
 ```
