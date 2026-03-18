@@ -1,9 +1,9 @@
 ---
 name: codex-gateway
 description: >-
-  Machine Payment Protocol (MPP) for keyless, pay-per-query access to the Codex
-  Supergraph GraphQL API. Use when the user has no API key and wants to pay per
-  query via the 402 challenge flow at https://graph.codex.io/graphql.
+  Use when the user wants to query the Codex Supergraph but $CODEX_API_KEY is
+  not set. Pays per query via the MPP 402 challenge flow. Only supports queries,
+  not mutations or subscriptions.
 metadata:
   author: codex-data
   version: "1.0"
@@ -41,5 +41,6 @@ Use this skill to access the Codex Supergraph without an API key via the MPP cha
 
 | File | Purpose |
 | ---- | ------- |
+| [references/gotchas.md](references/gotchas.md) | Common failure points — check here first |
 | [rules/wallets.md](rules/wallets.md) | Wallet setup: tempo wallet/request (Tempo) and awal (Base) |
 | [references/mpp-flow.md](references/mpp-flow.md) | Auth matrix, challenge details, error codes |

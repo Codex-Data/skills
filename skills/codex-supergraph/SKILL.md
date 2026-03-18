@@ -1,9 +1,9 @@
 ---
 name: codex-supergraph
 description: >-
-  Query Codex Supergraph GraphQL data (prices, tokens, pairs, events, holders,
-  and live subscriptions). Use when users ask for Codex on-chain analytics or
-  need runnable GraphQL calls to https://graph.codex.io/graphql with an API key.
+  Use when the user asks about token prices, charts, holders, trending tokens,
+  pair data, or any on-chain analytics from Codex — and $CODEX_API_KEY is set.
+  Also use when building GraphQL queries against https://graph.codex.io/graphql.
 metadata:
   author: codex-data
   version: "1.0"
@@ -28,11 +28,6 @@ Use this skill to produce valid Codex GraphQL requests using API key authenticat
 | Schema (SDL)          | `https://graph.codex.io/schema/latest.graphql`                  |
 | Introspection JSON    | `https://graph.codex.io/schema/latest.json`                     |
 | API-key auth          | `Authorization: <key>` or `Authorization: Bearer <token>`       |
-
-## Authentication
-
-- Use `Authorization: <key>` or `Authorization: Bearer <token>` for all queries, mutations, and subscriptions.
-- If the user already has a valid key, use this path.
 
 ## Session preflight (required)
 
@@ -86,7 +81,8 @@ Default discovery path: start with `filterTokens`.
 
 | File | Purpose |
 | ---- | ------- |
-| [references/apis.md](references/apis.md) | Endpoint/auth matrix, constraints, errors |
-| [references/query-templates.md](references/query-templates.md) | Query + websocket templates |
+| [references/gotchas.md](references/gotchas.md) | Common failure points — check here first |
+| [references/query-templates.md](references/query-templates.md) | Query + websocket templates with examples |
 | [references/endpoint-playbook.md](references/endpoint-playbook.md) | Operation selection heuristics by intent |
+| [references/apis.md](references/apis.md) | Endpoint/auth matrix, pagination, rate limits |
 | [references/tooling-and-mcp.md](references/tooling-and-mcp.md) | Codex Docs MCP setup for coding tools |

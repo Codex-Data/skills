@@ -14,9 +14,6 @@
 - Mutation/subscription in MPP mode returns `403`.
 - Valid API key/bearer auth takes precedence over MPP opt-in.
 
-Not part of this flow:
-- Legacy dashboard onboarding/top-up/balance payment endpoints
-
 ## Common failures
 
 | Symptom | Likely cause | Fix |

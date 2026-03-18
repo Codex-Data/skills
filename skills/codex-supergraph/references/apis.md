@@ -69,16 +69,6 @@ Use to validate `networkId` before price/event/chart requests.
 - Wait for `connection_ack`
 - Unsubscribe with `complete`
 
-## Pagination
-
-- `filterTokens`: max 200 results per call. Use the `offset` variable to paginate (e.g., `offset: 0`, then `offset: 200`).
-- `getTokenEvents`: use `cursor` from the previous response to fetch the next page.
-- `holders`: use `cursor` for pagination.
-
-## Rate limits
-
-The API enforces per-key rate limits. When exceeded, responses return HTTP 429. Back off and retry with exponential delay. Short-lived tokens may have stricter limits than long-lived API keys.
-
 ## Common failures
 
 | Symptom | Likely cause | Fix |
@@ -86,4 +76,5 @@ The API enforces per-key rate limits. When exceeded, responses return HTTP 429. 
 | 401 / UNAUTHENTICATED | Missing or invalid API auth | Validate key/token and header format |
 | 429 / Too Many Requests | Rate limit exceeded | Back off with exponential delay and retry |
 | GraphQL validation error | Input shape mismatch | Check operation args and variable types |
-| Empty bars response | Invalid symbol format | Use `pairAddress:networkId` format for `getBars` symbol |
+
+See [gotchas.md](gotchas.md) for detailed failure patterns (symbol formats, pagination, rate limits, etc.).

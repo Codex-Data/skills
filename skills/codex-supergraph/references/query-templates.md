@@ -131,8 +131,6 @@ query PairMetadata($pairId: String!) {
 
 ## 5) Pair bars (`getBars`)
 
-`symbol` format is `pairAddress:networkId` (e.g., `"0xabc123:1"`). `from`/`to` are Unix timestamps in seconds. `resolution` examples: `"1"` (1 min), `"5"`, `"15"`, `"60"`, `"240"`, `"1D"`, `"1W"`. Max 1500 datapoints per request.
-
 ```graphql
 query GetBars(
   $symbol: String!
