@@ -1,9 +1,9 @@
 ---
 name: codex-gateway
 description: >-
-  Use when the user wants to query the Codex Supergraph but $CODEX_API_KEY is
-  not set. Pays per query via the MPP 402 challenge flow. Only supports queries,
-  not mutations or subscriptions.
+  Use when the user wants to query the Codex Supergraph and the server returns
+  a 402 challenge. Pays per query via the MPP 402 challenge flow. Only supports
+  queries, not mutations or subscriptions.
 metadata:
   author: codex-data
   version: "1.0"
@@ -11,19 +11,18 @@ metadata:
 
 # Codex Machine Payment Protocol (MPP)
 
-Use this skill to access the Codex Supergraph without an API key via the MPP challenge flow.
+Use this skill when the Codex Supergraph returns a `402 Payment Required` response. The MPP challenge flow lets you pay per query without needing an API key.
 
 |                       |                                                                 |
 | --------------------- | --------------------------------------------------------------- |
 | HTTP endpoint         | `https://graph.codex.io/graphql`                                |
-| Opt-in header         | `X-Codex-Payment: mpp`                                         |
 | Credential header     | `Authorization: Payment <base64url-credential>`                 |
 
 ## How it works
 
-1. Send a GraphQL query with `X-Codex-Payment: mpp` (no credential).
+1. Send a GraphQL query (no credential).
 2. Server returns `402 Payment Required` with `WWW-Authenticate: Payment ...` challenges.
-3. Client solves one challenge and retries with both `X-Codex-Payment: mpp` and `Authorization: Payment <credential>`.
+3. Client solves one challenge and retries with `Authorization: Payment <credential>`.
 4. Server returns GraphQL data + `Payment-Receipt` header.
 
 ## Constraints

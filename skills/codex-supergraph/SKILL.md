@@ -2,7 +2,7 @@
 name: codex-supergraph
 description: >-
   Use when the user asks about token prices, charts, holders, trending tokens,
-  pair data, or any on-chain analytics from Codex — and $CODEX_API_KEY is set.
+  pair data, or any on-chain analytics from Codex.
   Also use when building GraphQL queries against https://graph.codex.io/graphql.
 metadata:
   author: codex-data
@@ -11,9 +11,9 @@ metadata:
 
 # Codex Supergraph Data
 
-## API Key Guard
+## Authentication
 
-This skill requires a valid `CODEX_API_KEY`. When the key is missing or empty, fall back to the codex-gateway skill instead. Check for the key before making any network calls.
+Pass `$CODEX_API_KEY` in the `Authorization` header if available. If the server returns `402 Payment Required`, use the codex-gateway skill to handle the payment flow.
 
 If both a local and global copy of this skill exist, the local copy takes precedence.
 

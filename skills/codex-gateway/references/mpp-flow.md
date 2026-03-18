@@ -4,7 +4,7 @@
 
 | Mode | Headers | Supports | Notes |
 | ---- | ------- | -------- | ----- |
-| MPP | `X-Codex-Payment: mpp` then `Authorization: Payment <credential>` | query only | `402` challenge/credential flow |
+| MPP | `Authorization: Payment <credential>` | query only | `402` challenge/credential flow |
 
 ## Details
 
@@ -12,7 +12,7 @@
 - Retry with `Authorization: Payment <credential>`.
 - Success returns GraphQL data + `Payment-Receipt`.
 - Mutation/subscription in MPP mode returns `403`.
-- Valid API key/bearer auth takes precedence over MPP opt-in.
+- Valid API key/bearer auth takes precedence over the payment flow.
 
 ## Common failures
 

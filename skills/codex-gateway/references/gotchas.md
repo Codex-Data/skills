@@ -8,7 +8,7 @@ MPP only works for `query` operations. Sending a mutation or subscription return
 
 ## API key takes precedence
 
-If both `Authorization: <key>` and `X-Codex-Payment: mpp` are present, the server uses API key auth and ignores MPP. Don't mix them.
+If an `Authorization` header with an API key is present, the server uses API key auth and skips the payment flow. Don't mix them.
 
 ## Challenges expire
 
