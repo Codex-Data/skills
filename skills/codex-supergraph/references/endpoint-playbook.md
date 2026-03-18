@@ -43,6 +43,26 @@ Use this map to pick the best operation quickly.
 | Launchpad token event firehose | `onLaunchpadTokenEventBatch` | High-frequency stream; isolate connection and proxy through backend. |
 | Per-event launchpad updates | `onLaunchpadTokenEvent` | Use when batch handling is not needed. |
 
+## Prediction markets
+
+| Intent | Preferred query | Notes |
+| --- | --- | --- |
+| Discover trending prediction events | `filterPredictionEvents` | Rank by `trendingScore24h`, `relevanceScore24h`, or `volumeUsd24h`. Filter by `protocol`, `status`, `categories`. |
+| Search prediction events by keyword | `filterPredictionEvents` | Use `phrase` parameter. |
+| Discover/filter individual markets | `filterPredictionMarkets` | Rank by `competitiveScore24h`, outcome attributes, or `openInterestUsd`. Filter by `eventIds`, `status`, `closesAt`. |
+| Prediction event detail page | `detailedPredictionEventStats` | Full metadata, markets list, windowed stats, lifecycle. |
+| Event market pricing | `filterPredictionMarkets` | Filter by `eventIds`, rank by `outcome0.bestAskCT` for probability sort. |
+| Single market OHLC chart | `predictionMarketBars` | Per-outcome price, bid/ask, volume, OI. Resolutions: min1 through week1. |
+| Multi-market probability comparison | `predictionEventTopMarketsBars` | Up to 10 markets in one request. Plot `outcome0.priceCollateralToken.c` per market. |
+| Event volume/liquidity/OI chart | `predictionEventBars` | Aggregated across all markets in the event. No per-outcome price data. |
+| Prediction trades | `predictionTrades` | Filter by `eventId`, `marketId`, or `traderId`. Cursor-paginated. |
+| Outcome token holders | `predictionTokenHolders` | Requires `marketId` and `tokenId`. |
+| Prediction categories | `predictionCategories` | Fetch once and cache. Use `slug` for filtering. |
+| Trader leaderboard | `filterPredictionTraders` | Rank by profit, win rate, PnL. Filter by volume floors. Search by `phrase`. |
+| Trader profile and stats | `detailedPredictionTraderStats` | All-time and windowed stats (statsHour1 through statsDay30). |
+| Trader positions | `filterPredictionTraderMarkets` | Bidirectional: by `traderIds` for portfolio, by `marketIds`/`eventIds` for top traders. |
+| Trader performance chart | `predictionTraderBars` | Plot `cumulativeRealizedPnlCT` for P&L curve. |
+
 ## Auth and token management
 
 | Intent | Preferred mutation/query | Notes |

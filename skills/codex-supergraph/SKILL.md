@@ -2,8 +2,14 @@
 name: codex-supergraph
 description: >-
   Use when the user asks about token prices, charts, holders, trending tokens,
-  pair data, or any on-chain analytics from Codex.
+  pair data, prediction markets, or any on-chain analytics from Codex.
   Also use when building GraphQL queries against https://graph.codex.io/graphql.
+
+  TRIGGERS: token price, token chart, trending tokens, pair data, holders,
+  prediction markets, Polymarket, Kalshi, event odds, prediction event,
+  prediction traders, trader leaderboard, trader PnL, prediction charts,
+  outcome probability, open interest, prediction categories, betting markets,
+  market resolution, prediction positions, prediction trades
 metadata:
   author: codex-data
   version: "1.0"
@@ -67,6 +73,19 @@ Use network IDs from this result before expensive requests.
 | Launchpad streams | `onLaunchpadTokenEventBatch`, `onLaunchpadTokenEvent` |
 | Unconfirmed Solana events | `onUnconfirmedEventsCreated` |
 | Short-lived keys | `createApiTokens`, `apiTokens`, `apiToken`, `deleteApiToken` |
+| Prediction event discovery | `filterPredictionEvents` |
+| Prediction market discovery | `filterPredictionMarkets` |
+| Prediction event detail | `detailedPredictionEventStats` |
+| Prediction market chart | `predictionMarketBars` |
+| Prediction multi-market chart | `predictionEventTopMarketsBars` |
+| Prediction event chart | `predictionEventBars` |
+| Prediction trades | `predictionTrades` |
+| Prediction token holders | `predictionTokenHolders` |
+| Prediction categories | `predictionCategories` |
+| Prediction trader leaderboard | `filterPredictionTraders` |
+| Prediction trader profile | `detailedPredictionTraderStats` |
+| Prediction trader positions | `filterPredictionTraderMarkets` |
+| Prediction trader chart | `predictionTraderBars` |
 
 Default discovery path: start with `filterTokens`.
 
@@ -85,4 +104,5 @@ Default discovery path: start with `filterTokens`.
 | [references/query-templates.md](references/query-templates.md) | Query + websocket templates with examples |
 | [references/endpoint-playbook.md](references/endpoint-playbook.md) | Operation selection heuristics by intent |
 | [references/apis.md](references/apis.md) | Endpoint/auth matrix, pagination, rate limits |
+| [references/prediction-markets.md](references/prediction-markets.md) | Prediction market queries — events, markets, traders, charts |
 | [references/tooling-and-mcp.md](references/tooling-and-mcp.md) | Codex Docs MCP setup for coding tools |

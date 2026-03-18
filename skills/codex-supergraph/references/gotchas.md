@@ -80,3 +80,27 @@ Rate limit responses are HTTP 429, not wrapped in GraphQL `errors`. Check the HT
 ## Short-lived tokens can't manage themselves
 
 `apiTokens`, `apiToken`, and `deleteApiToken` are not available when authenticated with a short-lived token. Use the long-lived API key for token management.
+
+## Prediction market `bestAskCT` is the implied probability
+
+For stablecoin-collateral markets, `bestAskCT` of 0.65 means 65% implied probability. Prefer CT (Collateral Token) values over USD values.
+
+## Prediction trader ID format
+
+Trader IDs use the format `address:Protocol` (e.g., `0x1234...:Polymarket`). Missing the protocol suffix will return no results.
+
+## Prediction OHLC values are strings
+
+All OHLC fields (`o`, `h`, `l`, `c`) in prediction market bars are strings, not numbers. Parse them to floats before rendering. Timestamps are unix seconds — multiply by 1000 for JavaScript milliseconds.
+
+## `predictionEventBars` has no per-outcome prices
+
+`predictionEventBars` only returns aggregated volume, liquidity, and open interest. For per-outcome price data, use `predictionMarketBars` or `predictionEventTopMarketsBars`.
+
+## `filterPredictionEvents` vs `filterPredictionMarkets`
+
+Events are containers grouping related markets. Use `filterPredictionEvents` for discovery, then `filterPredictionMarkets(eventIds)` for market-level pricing within an event.
+
+## `competitiveScore24h` is markets-only
+
+`competitiveScore24h` is available on `filterPredictionMarkets` but not on `filterPredictionEvents`. It measures how close the outcome prices are.
