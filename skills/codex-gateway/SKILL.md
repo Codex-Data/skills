@@ -35,12 +35,14 @@ Use this skill to access the Codex Supergraph without an API key via the MPP cha
 
 - Never print raw credentials.
 - Only use MPP for `query` operations.
-- For available GraphQL operations and endpoint selection heuristics, see the `codex-supergraph` skill.
+- **Before constructing any query**, read `references/query-templates.md` below for the correct GraphQL schema. Do not guess query or field names.
 
 ## References
 
 | File | Purpose |
 | ---- | ------- |
-| [references/gotchas.md](references/gotchas.md) | Common failure points — check here first |
+| [../codex-supergraph/references/query-templates.md](../codex-supergraph/references/query-templates.md) | **GraphQL query schema and examples — read before constructing queries** |
+| [../codex-supergraph/references/gotchas.md](../codex-supergraph/references/gotchas.md) | Common query failure points |
+| [references/gotchas.md](references/gotchas.md) | MPP-specific failure points |
 | [rules/wallets.md](rules/wallets.md) | Wallet setup: tempo wallet/request (Tempo) and awal (Base) |
 | [references/mpp-flow.md](references/mpp-flow.md) | Auth matrix, challenge details, error codes |
