@@ -14,12 +14,9 @@ Pick the tool that matches the network in the `WWW-Authenticate` challenge, then
 
 `tempo` is the Tempo CLI. The `wallet` extension manages identity and funding; the `request` extension is an HTTP client that handles the full MPP 402-challenge flow automatically — it detects the challenge, signs a Tempo transaction, and retries the request in one step.
 
-### Install
+### Prerequisites
 
-```bash
-curl -fsSL https://tempo.xyz/install | bash
-tempo add wallet
-```
+Requires the `tempo` CLI with the `wallet` extension.
 
 ### Setup
 
