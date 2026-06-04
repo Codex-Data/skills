@@ -37,6 +37,8 @@ Several operations use `address:networkId` composite IDs:
 
 You can rank by `trendingScore24` in `filterTokens` rankings, but it is not a selectable field on the result type. Don't include it in the selection set.
 
+Cross-domain trap: tokens rank by `trendingScore24` (no "h"); prediction markets rank by `trendingScore24h` (with "h", and it *is* selectable there). Swapping them returns empty results rather than erroring, so verify which domain you're in.
+
 ## `filterTokens` pagination
 
 Max 200 results per call. Use `offset` as an input arg to paginate. The response returns `page` (not `offset`) and `count`.

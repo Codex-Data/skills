@@ -24,4 +24,4 @@ If the user has the Tempo CLI installed, `tempo request` handles the full 402 ch
 
 ## Check wallet balance before making requests
 
-Both `tempo wallet -t whoami` should be run before paid requests. An insufficient balance mid-flow produces confusing errors.
+Run `tempo wallet -t whoami` before paid requests and confirm `ready` is `true` with sufficient `balance.available`. An insufficient balance mid-flow produces confusing errors.
