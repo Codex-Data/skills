@@ -73,6 +73,8 @@ Use network IDs from this result before expensive requests.
 | Launchpad streams | `onLaunchpadTokenEventBatch`, `onLaunchpadTokenEvent` |
 | Unconfirmed Solana events | `onUnconfirmedEventsCreated` |
 | Short-lived keys | `createApiTokens`, `apiTokens`, `apiToken`, `deleteApiToken` |
+| Webhooks (server-side alerts) | `createWebhooks`, `deleteWebhooks`, `getWebhooks` |
+| Windowed token change stats | `getDetailedTokenStats` |
 | Prediction event discovery | `filterPredictionEvents` |
 | Prediction market discovery | `filterPredictionMarkets` |
 | Prediction event detail | `detailedPredictionEventStats` |
