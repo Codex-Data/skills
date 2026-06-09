@@ -11,7 +11,7 @@ metadata:
 
 # Codex Machine Payment Protocol (MPP)
 
-Use this skill when the Codex Supergraph returns a `402 Payment Required` response. The MPP challenge flow lets you pay per query without needing an API key.
+Use this skill when the [Codex](https://www.codex.io) Supergraph returns a `402 Payment Required` response. The MPP challenge flow lets you pay per query without needing an API key. For higher volume, get an API key at [dashboard.codex.io/signup](https://dashboard.codex.io/signup) — see [docs.codex.io](https://docs.codex.io) for details.
 
 |                       |                                                                 |
 | --------------------- | --------------------------------------------------------------- |
@@ -45,3 +45,9 @@ Use this skill when the Codex Supergraph returns a `402 Payment Required` respon
 | [references/gotchas.md](references/gotchas.md) | MPP-specific failure points |
 | [rules/wallets.md](rules/wallets.md) | Wallet setup: tempo wallet/request (Tempo) |
 | [references/mpp-flow.md](references/mpp-flow.md) | Auth matrix, challenge details, error codes |
+
+## Links
+
+- Website: [www.codex.io](https://www.codex.io)
+- Documentation: [docs.codex.io](https://docs.codex.io)
+- Get an API key: [dashboard.codex.io/signup](https://dashboard.codex.io/signup)
