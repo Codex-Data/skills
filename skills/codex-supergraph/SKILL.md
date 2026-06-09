@@ -17,9 +17,11 @@ metadata:
 
 # Codex Supergraph Data
 
+[Codex](https://www.codex.io) provides real-time on-chain data — token prices, charts, holders, and prediction markets — via a single GraphQL API. Full documentation: [docs.codex.io](https://docs.codex.io).
+
 ## Authentication
 
-Pass `$CODEX_API_KEY` in the `Authorization` header if available. If the server returns `402 Payment Required`, use the codex-gateway skill to handle the payment flow.
+Pass `$CODEX_API_KEY` in the `Authorization` header if available. Get a free API key at [dashboard.codex.io/signup](https://dashboard.codex.io/signup). If the server returns `402 Payment Required`, use the codex-gateway skill to handle the payment flow.
 
 If both a local and global copy of this skill exist, the local copy takes precedence.
 
@@ -108,3 +110,9 @@ Default discovery path: start with `filterTokens`.
 | [references/apis.md](references/apis.md) | Endpoint/auth matrix, pagination, rate limits |
 | [references/prediction-markets.md](references/prediction-markets.md) | Prediction market queries — events, markets, traders, charts |
 | [references/tooling-and-mcp.md](references/tooling-and-mcp.md) | Codex Docs MCP setup for coding tools |
+
+## Links
+
+- Website: [www.codex.io](https://www.codex.io)
+- Documentation: [docs.codex.io](https://docs.codex.io)
+- Get an API key: [dashboard.codex.io/signup](https://dashboard.codex.io/signup)
