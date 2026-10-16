@@ -259,20 +259,16 @@ query DetailedPredictionEventStats {
     statsDay1 {
       start
       end
-      statsCurrency {
-        volumeUsd
-        volumeCT
-        openLiquidityUsd
-        closeLiquidityUsd
-        openOpenInterestUsd
-        closeOpenInterestUsd
-      }
-      statsNonCurrency { trades uniqueTraders }
-      statsChange { volumeChange openLiquidityChange openOpenInterestChange tradesChange uniqueTradersChange }
-      scores { trending relevance }
+      core { volume { usd ct } trades }
+      buySell { buyVolume { usd ct } sellVolume { usd ct } }
+      uniqueTraders { uniqueTraders }
+      liquidity { liquidity { open { usd ct } close { usd ct } } }
+      openInterest { openInterest { open { usd ct } close { usd ct } } }
+      statsChange { volumeChange tradesChange uniqueTradersChange liquidityChange openInterestChange }
+      scores { trending relevance competitive }
     }
-    allTimeStats { volumeUsd volumeCT venueVolumeUsd venueVolumeCT }
-    lifecycle { ageSeconds expectedLifespanSeconds timeToResolutionSeconds isResolved }
+    allTimeStats { volume { usd ct } venueVolume { usd ct } }
+    lifecycle { ageSeconds expectedLifespanSeconds timeToResolutionSeconds isResolved winningOutcomeId }
   }
 }
 ```
@@ -757,7 +753,7 @@ query TraderTrades {
 
 **Trader profile page** (run 1–3 in parallel on load):
 1. `detailedPredictionTraderStats` — profile header and summary stats
-2. `filterPredictionTraderMarkets(traderIds, hasOpenPosition: true)` — active positions
+2. `filterPredictionTraderMarkets(traderIds, filters: { hasOpenPosition: true })` — active positions
 3. `predictionTraderBars` — cumulative P&L chart
 4. `filterPredictionTraderMarkets(traderIds)` — all positions (on tab switch)
 5. `predictionTrades(traderId)` — trade history (on tab switch)
