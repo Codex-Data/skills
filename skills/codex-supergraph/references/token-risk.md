@@ -8,8 +8,8 @@ Codex returns one assessment per token: a **verdict**, the **score** behind it, 
 
 | Where | Fields |
 | --- | --- |
-| `token`, `tokens`, `filterTokens` results (`token { risk { ... } }`) | `risk { verdict score coverage reasons flaggedAt analyzedAt }` |
-| `filterPairs` results | `riskVerdict riskScore riskCoverage riskReasons riskFlaggedAt` (describe the pair's `quoteToken`, not the pool) |
+| `token`, `tokens`, `filterTokens` results (`token { risk { ... } }`) | `risk { verdict score coverage reasons flaggedAt analyzedAt buyTax sellTax }` |
+| `filterPairs` results | `riskVerdict riskScore riskCoverage riskReasons riskFlaggedAt riskBuyTax riskSellTax` (describe the pair's `quoteToken`, not the pool) |
 | Filters on `filterTokens` and `filterPairs` | `riskVerdicts`, `riskCoverages`, `riskReasons`, `riskScore`, `riskFlaggedAt` |
 | Rankings on both | `riskScore`, `riskFlaggedAt` |
 
@@ -98,9 +98,32 @@ query HoneypotPairs($filters: PairFilters, $rankings: [PairRanking]) {
 }
 ```
 
-## The actual tax numbers: contract simulator (Growth or Enterprise, beta)
+## The actual tax numbers
 
-`risk` says a token has a high tax or failed a sell. The numbers come from the simulator, which runs a buy and a sell against one of the token's pools.
+`risk.buyTax` and `risk.sellTax` return the tax measured by the token's latest decisive contract analysis, the one the verdict is scored from. On `filterPairs`, `riskBuyTax` and `riskSellTax` give the same values for the pair's `quoteToken`. No simulator run is needed.
+
+```graphql
+query TokenTaxes($input: TokenInput!) {
+  token(input: $input) {
+    symbol
+    risk { verdict coverage reasons buyTax sellTax }
+  }
+}
+```
+
+```json
+{ "input": { "address": "0x32990983f0db5acf52660661725e489cafcfef8d", "networkId": 56 } }
+```
+
+- Numbers, not strings: `0.05` is 5%.
+- `null` means no decisive analysis measured that side. Treat it as unknown, not 0%. One side can be set while the other is null.
+- A honeypot returns `sellTax: null` (the test sale failed, so nothing was measured); `buyTax` is usually set. Read `verdict` and `reasons` for the honeypot itself.
+- The tax can be newer than `verdict`: a new analysis shows at once, the verdict updates on the next assessment.
+- Tax is not a filter or ranking. To find taxed tokens, filter `riskReasons: ["TAX_SELL_HIGH"]` or `["TAX_BUY_HIGH"]` (10% or more), then read the numbers.
+
+### Fresh run or a specific pool: contract simulator (Growth or Enterprise, beta)
+
+Use the simulator only when `buyTax` / `sellTax` are null, or you need a new run or a per-pool result. It runs a buy and a sell against one of the token's pools.
 
 1. `simulateTokenContract(input: { simulateLiveContractInput: { contractAddress, networkId } })` returns `{ result simulationId error }` at once; the analysis runs in the background.
 2. `getSimulateTokenContractResults(contractAddress, networkId, simulationId)` returns the rows; or subscribe to `onSimulateTokenContract(contractAddress, networkId)`.
@@ -116,7 +139,7 @@ mutation AnalyzeToken($input: SimulateTokenContractInput!) {
 ```
 
 ```graphql
-query TokenTaxes($contractAddress: String!, $networkId: Int!, $simulationId: String) {
+query SimulatedTaxes($contractAddress: String!, $networkId: Int!, $simulationId: String) {
   getSimulateTokenContractResults(contractAddress: $contractAddress, networkId: $networkId, simulationId: $simulationId) {
     results {
       status
@@ -133,7 +156,7 @@ query TokenTaxes($contractAddress: String!, $networkId: Int!, $simulationId: Str
 { "contractAddress": "0x89d8cb38067b55f820f29a9e12d0ce18682a2bfc", "networkId": 8453, "simulationId": "<simulationId from AnalyzeToken>" }
 ```
 
-Reading a result: `verdict` is the answer (`TRADEABLE`, `HONEYPOT`, or `INDETERMINATE` with a `verdictReason`); `status` only tracks the pipeline and `buySuccess` / `sellSuccess` are true on indeterminate rows too, so read `verdict` first. `buyTax` / `sellTax` are decimal-fraction strings (`"0.05"` is 5%, `"1"` is 100%; a honeypot usually shows `sellTax: "1"` with `sellSuccess: false`). Tax belongs to the pool in `liquidity.pairAddress`, so two runs on the same token can differ (a Uniswap V4 pool id is 32 bytes). Pass the `simulationId` returned by the mutation: the submission writes a `PENDING` row first and the finished row lands under the same `uuid` within seconds, so poll until that row has a `verdict`. Without `simulationId` you get every stored analysis, newest first, and an older finished row can be mistaken for the new result; an empty list means never analyzed. One submission per token and network every five minutes, otherwise `TOO_MANY_REQUESTS`.
+Reading a result: `verdict` is the answer (`TRADEABLE`, `HONEYPOT`, or `INDETERMINATE` with a `verdictReason`); `status` only tracks the pipeline and `buySuccess` / `sellSuccess` are true on indeterminate rows too, so read `verdict` first. Here `swap.buyTax` / `swap.sellTax` are decimal-fraction strings (`"0.05"` is 5%, `"1"` is 100%; a honeypot usually shows `sellTax: "1"` with `sellSuccess: false`). Tax belongs to the pool in `liquidity.pairAddress`, so two runs on the same token can differ (a Uniswap V4 pool id is 32 bytes). Pass the `simulationId` returned by the mutation: the submission writes a `PENDING` row first and the finished row lands under the same `uuid` within seconds, so poll until that row has a `verdict`. Without `simulationId` you get every stored analysis, newest first, and an older finished row can be mistaken for the new result; an empty list means never analyzed. One submission per token and network every five minutes, otherwise `TOO_MANY_REQUESTS`.
 
 ## Supporting signals (keep, but read `risk` first)
 

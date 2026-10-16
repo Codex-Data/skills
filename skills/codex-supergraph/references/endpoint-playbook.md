@@ -58,7 +58,7 @@ Use this map to pick the best operation quickly.
 | --- | --- | --- |
 | Is this token a scam / safe to buy | `token { risk { verdict score coverage reasons } }` | Read coverage beside the verdict; null means unknown. See [token-risk.md](token-risk.md). |
 | Screen risky tokens out of a list | `filterTokens` with `riskVerdicts`, `riskCoverages`, `riskReasons`, `riskScore` | Values in one filter are ORed, filters are ANDed. |
-| Buy / sell tax, honeypot proof | `simulateTokenContract` then `getSimulateTokenContractResults` | Growth+, beta, one pool per run. |
+| Buy / sell tax, honeypot proof | `token { risk { buyTax sellTax verdict reasons } }`; on pairs `riskBuyTax` / `riskSellTax` | Fractions, null = not measured. For a fresh or per-pool run: `simulateTokenContract` then `getSimulateTokenContractResults` (Growth+, beta). |
 | How much liquidity is locked | `liquidityMetadataByToken`, `liquidityMetadata` | `liquidityLocksV2` only for holder and vesting detail. |
 
 ## Prediction markets

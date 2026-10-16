@@ -77,7 +77,7 @@ Use network IDs from this result before expensive requests. Networks are added a
 | Token events | `getTokenEvents` |
 | Maker events | `getTokenEventsForMaker` |
 | Windowed token change stats | `getDetailedTokenStats` |
-| Token risk (scam, honeypot, tax) | `token { risk }`, `filterTokens` / `filterPairs` risk filters, `simulateTokenContract` + `getSimulateTokenContractResults` |
+| Token risk (scam, honeypot, tax) | `token { risk }` (incl. `buyTax` / `sellTax`), `filterTokens` / `filterPairs` risk filters, `simulateTokenContract` + `getSimulateTokenContractResults` for a fresh run |
 | Liquidity locked | `liquidityMetadataByToken`, `liquidityMetadata`; `liquidityLocksV2` for holder/vesting detail |
 | Wallet leaders for a token | `filterTokenWallets`, `tokenTopTraders` |
 | Wallet screener | `filterWallets` |
